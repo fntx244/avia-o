@@ -1,0 +1,65 @@
+# Assentos disponíveis no avião (6 assentos por fileira: A, B, C, D, E, F)
+assentos = {
+    "1A": False, "1B": False, "1C": False, "1D": False, "1E": False, "1F": False,
+    "2A": False, "2B": False, "2C": False, "2D": False, "2E": False, "2F": False,
+    "3A": False, "3B": False, "3C": False, "3D": False, "3E": False, "3F": False,
+}
+
+# Função para mostrar o estado dos assentos
+def mostrar_assentos():
+    print("Estado atual dos assentos:")
+    for fileira in range(1, 4):
+        for letra in ['A', 'B', 'C', 'D', 'E', 'F']:
+            assento = f"{fileira}{letra}"
+            status = "Ocupado" if assentos[assento] else "Livre"
+            print(f"{assento}: {status}", end=" | ")
+        print()
+
+# Função principal do sistema de reservas
+def sistema_reserva():
+    while True:
+        mostrar_assentos()
+        tipo_passagem = input("Escolha o tipo de passagem (Econômico/Executivo): ").strip().lower()
+
+        if tipo_passagem not in ["econômico", "executivo"]:
+            print("Tipo de passagem inválido. Tente novamente.")
+            continue
+
+        while True:
+            escolha_assento = input("Escolha um assento (ex: 1A): ").strip().upper()
+
+            if escolha_assento not in assentos:
+                print("Assento inválido. Escolha um assento válido.")
+                continue
+
+            # Verificação de assentos já reservados
+            if assentos[escolha_assento]:
+                print("Esse assento já está reservado. Por favor, escolha outro.")
+                continue
+
+            # Restrições para passagem econômica
+            if tipo_passagem == "econômico" and escolha_assento[-1] in ['A', 'F']:
+                print("As poltronas A e F são exclusivas para o tipo Executivo. Por favor, escolha outro assento.")
+                continue
+
+            # Recomendação de poltronas prioritárias para o tipo executivo
+            if tipo_passagem == "executivo" and escolha_assento[-1] not in ['A', 'F']:
+                print("Recomendamos que você reserve uma poltrona A ou F (janela), mas outros assentos estão disponíveis.")
+                confirmar = input("Deseja continuar com o assento escolhido? (s/n): ").strip().lower()
+                if confirmar == 'n':
+                    continue
+
+            # Reserva do assento
+            assentos[escolha_assento] = True
+            print(f"Assento {escolha_assento} reservado com sucesso.")
+
+            # Perguntar se deseja realizar outra reserva
+            nova_reserva = input("Deseja fazer outra reserva? (s/n): ").strip().lower()
+            if nova_reserva == 'n':
+                print("Encerrando o sistema de reservas...")
+                return
+            else:
+                break  # Sai do loop atual para uma nova reserva
+
+# Executa o sistema de reservas
+sistema_reserva()
